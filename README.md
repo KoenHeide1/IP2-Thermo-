@@ -5,8 +5,8 @@ This repository provides a template for creating a portfolio for the Q2 course "
 ## Getting Started
 
 1. Check the GH pages and follow the instruction to use this template.
-Koenbranch
 
+Hoi hoi
 
 ## Customization
 
