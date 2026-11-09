@@ -8,6 +8,7 @@ This repository provides a template for creating a portfolio for the Q2 course "
 
 Van rik moest ik dit doen
 ooooo
+Casper
 ## Customization
 
 Edit the content and configuration files to suit your needs. Refer to the [JupyterBook documentation](https://jupyterbook.org/) for more details.
