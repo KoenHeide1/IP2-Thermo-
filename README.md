@@ -6,13 +6,7 @@ This repository provides a template for creating a portfolio for the Q2 course "
 
 1. Check the GH pages and follow the instruction to use this template.
 
-Van rik moest ik dit doen
-ooooo
-Casper
-Koen
-Ik weet niet waarom het zo is
-HWLO===
-sjjwjwj
+
 
 ## Customization
 
