@@ -7,7 +7,7 @@ This repository provides a template for creating a portfolio for the Q2 course "
 1. Check the GH pages and follow the instruction to use this template.
 
 Van rik moest ik dit doen
-
+ooooo
 ## Customization
 
 Edit the content and configuration files to suit your needs. Refer to the [JupyterBook documentation](https://jupyterbook.org/) for more details.
