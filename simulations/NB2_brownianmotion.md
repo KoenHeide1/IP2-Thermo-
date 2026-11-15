@@ -48,7 +48,7 @@ Als model gaan we uit van een deel van het volume van een fietsband die onder ee
 ```
 
 ```{solution} ex-recap-1
-### YOUR CODE HERE ###
+### Kijken of dit op mijn branche staat###
 ```
 
 De simulatie die we gaan maken bevat maar twee dimensies. We kunnen het oppervlak per deeltje in deze simulatie daarom kiezen als het zojuist berekende $V_\text{molecuul}^{2/3}$.
@@ -77,7 +77,7 @@ In de python cell hieronder staan enkele waarden gegeven. Het aantal deeltjes $N
 ```
 
 ```{solution} ex-recap-3
-### YOUR CODE HERE ###
+### HHE ###
 ```
 
 ```{exercise} DT
