@@ -68,7 +68,7 @@ Ook deze heb je hierna nodig.
 ```
 
 ```{solution} ex-recap-2
-### YOUR CODE HERE ###
+### Kamertemperatuur is rond de 20 graden. Dit is $293.15$ graden kelvin. De constante van Boltzmann is $1.380649\cdot10^{-23}$.Er zijn 2 dimensies: f is dus 2. Rechts van de streep staat $\frac{2}{2}\cdot1.380649\cdot10^{-23}\cdot293.15 = 4.047372544\cdot10^{-21}$. Een luchtmolecuul heeft een massa van $28.97$ unit, wat omgezet kan worden tot $4.81058\cdot10^{-26}$ kilogram. De snelheid is dan $\sqrt{\frac{4.047372544}{0.5\cdot4.81058\cdot10^{-26}}}$. Dit komt uit op $410.2068117\mathrm{m/s}$, wat afgerond $4\cdot10^{2} \mathrm{m/s}$ is.  ###
 ```
 
 ```{exercise} Radius

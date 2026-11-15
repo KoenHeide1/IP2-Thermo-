@@ -1196,12 +1196,12 @@ class ParticleClass:
         dy=self.r[1]-other.r[1]
         rr=self.R+other.R
         return  dx**2+dy**2 < rr**2             #Checkt of de afstand niet kleiner is dan de stralen gecombineerd
-n = int(input())
+
 # Simulation parameters
 dt = 0.1        # time step
 num_steps = 530  # number of time steps
 m1 = 1.0
-m2 = 10**n
+m2 = 50
 
 #definieren van de particles
 particleA = ParticleClass(m=m1, v=[0, 0], r=[-4.0, 0.0],R=0.45)  
@@ -1270,11 +1270,12 @@ def update(frame):
     return dot, counter_text
 
 # Create animation
-ani = FuncAnimation(fig, update, frames=range(250), init_func=init, blit=True, interval=20)
+ani = FuncAnimation(fig, update, frames=range(300), init_func=init, blit=True, interval=20)
 
 # For Jupyter notebook:
 from IPython.display import HTML
 HTML(ani.to_jshtml())
+
 ```
 
 ```{exercise}
@@ -1282,121 +1283,6 @@ Klaar? Bekijk de twee versies, kies de beste en doe een `Pull Request` naar `Mai
 ```
 
 ```python
-# num_botsingen = ...
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
-
-class ParticleClass:
-    def __init__(self, m, v, r, R):
-        self.m = m                          # mass of the particle
-        self.v = np.array(v, dtype=float)   # velocity vector
-        self.r = np.array(r, dtype=float)   # position vector
-        self.R = R                          # radius of the particle
-        self.overlap = False                # hielp ons onthouden of we vorige frame al overlapten
-
-    def update_position(self, dt):
-        self.r += self.v * dt
-
-    def collide_detection(self, other):
-        dx = self.r[0] - other.r[0]
-        dy = self.r[1] - other.r[1]
-        rr = self.R + other.R
-        return dx**2 + dy**2 < rr**2        # Checkt of de afstand niet kleiner is dan de stralen gecombineerd
-
-    def wall_collision(self, grens):
-        # grens = halve breedte van de box (dus 10 voor xlim -10..10)
-        botsingen = 0
-        for as_ in (0, 1):
-            if self.r[as_] + self.R > grens:        # rechter/bovenkant
-                self.r[as_] = grens - self.R        # terugzetten op de muur
-                self.v[as_] = -self.v[as_]
-                botsingen += 1
-            elif self.r[as_] - self.R < -grens:     # linker/onderkant
-                self.r[as_] = -grens + self.R
-                self.v[as_] = -self.v[as_]
-                botsingen += 1
-        return botsingen
-
-# Simulation parameters
-dt = 0.01           # kleinere tijdstap, anders mis je botsingen bij hoge massa
-num_steps = 20000   # genoeg stappen voor veel botsingen
-m1 = 1.0
-m2 = 50.0          # probeer 1, 100, 10000, ...
-grens = 10.0
-
-# definieren van de particles
-particleA = ParticleClass(m=m1, v=[1.0, 0.0], r=[-4.0, 0.0], R=0.45)   # lichte massa, beweegt
-particleB = ParticleClass(m=m2, v=[-0.0, 0.0], r=[-2.0, 0.0], R=0.45)  # zware massa, staat stil
-
-# Create the figure and axis
-fig, ax = plt.subplots()
-
-ax.set_xlim(-grens, grens)
-ax.set_ylim(-grens, grens)
-ax.set_aspect('equal')
-ax.set_title("Particle Animation")
-ax.set_xlabel("x")
-ax.set_ylabel("y")
-
-# Create the particle as a red dot and a blue dot
-dotA, = ax.plot([], [], 'ro', markersize=10)
-dotB, = ax.plot([], [], 'bo', markersize=10)
-
-counter_text = ax.text(-9.5, 9, "")
-
-counter = 0
-
-# Initialization function for animation
-def init():
-    dotA.set_data([], [])
-    dotB.set_data([], [])
-    counter_text.set_text("")
-    return dotA, dotB, counter_text
-
-# Update function for each frame
-def update(frame):
-    global counter
-
-    particleA.update_position(dt)
-    particleB.update_position(dt)
-
-    # botsing tussen de deeltjes: alleen tellen als ze net beginnen te overlappen
-    if particleA.collide_detection(particleB):
-        if not particleA.overlap:
-            vA, vB, mA, mB = particleA.v, particleB.v, particleA.m, particleB.m
-            rAB = particleA.r - particleB.r
-            n = rAB / np.linalg.norm(rAB)            # genormaliseerde normaalvector
-            # elastische botsing: plus in de teller, zelfde n voor beide
-            vA_new = vA - 2 * mB / (mA + mB) * np.dot(vA - vB, n) * n
-            vB_new = vB + 2 * mA / (mA + mB) * np.dot(vA - vB, n) * n
-            particleA.v = vA_new
-            particleB.v = vB_new
-            counter += 1
-        particleA.overlap = True
-    else:
-        particleA.overlap = False
-
-    # wall collision detection and response
-    counter += particleA.wall_collision(grens)
-    counter += particleB.wall_collision(grens)
-
-    dotA.set_data([particleA.r[0]], [particleA.r[1]])
-    dotB.set_data([particleB.r[0]], [particleB.r[1]])
-    counter_text.set_text(f"Collisions: {counter}")
-
-    return dotA, dotB, counter_text
-
-# Create animation
-ani = FuncAnimation(fig, update, frames=range(num_steps), init_func=init,
-                    blit=True, interval=1)
-
-# For Jupyter notebook:
-from IPython.display import HTML
-HTML(ani.to_jshtml())
-
-```
-
-```python
-
+#Notities:
+#opdracht 17 komt totaal niet op een getal van pi uit.
 ```
