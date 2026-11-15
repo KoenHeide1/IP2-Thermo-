@@ -1246,7 +1246,7 @@ def update(frame):
     #collision detection and response
     if particleA.collide_detection(particleB):
         vA, vB, mA, mB, rA, rB = particleA.v, particleB.v, particleA.m, particleB.m, particleA.r, particleB.r
-        vA_new = vA - 2 * mB / (mA + mB) * np.dot(vA - vB, rA - rB) / (1e-12+np.linalg.norm(rA - rB))**2 * (rA - rB)
+        vA_new = vA - 2 * mB / (mA + mB) * np.dot(vA - vB, rA - rB) / (1e-12+np.linalg.norm(rA - rB))**2 * (rA - rB)          #de code van hierboven
         vB_new = vB - 2 * mA / (mA + mB) * np.dot(vB - vA, rB - rA) / (1e-12+np.linalg.norm(rB - rA))**2 * (rB - rA)
         particleA.v = vA_new
         particleB.v = vB_new
@@ -1254,23 +1254,24 @@ def update(frame):
 
 
     # wall collision detection and response
-    if (particleA.r[0]-particleA.R)**2>100: # Check if particle is outside the bounds, np.abs could be used but is slower
+    #Voor beide hoeft er geen rechtermuur te zijn.
+    if (particleA.r[0]-particleA.R)<-10: # Check if particle is outside the bounds, np.abs could be used but is slower
         particleA.v[0] = -particleA.v[0]           #ParticleA gaat zonder de straal meetenemen helemaal de kant in,waardoor de collisions worden vertraagd.
         counter=counter+1
-    if particleA.r[1]**2>100: 
+    if particleA.r[1]**2>100:         
         particleA.v[1] = -particleA.v[1]
 
     dot.set_data([particleB.r[0]], [particleB.r[1]])
-    if (particleB.r[0]-particleB.R)**2>100: 
+    if (particleB.r[0]-particleB.R)<-10: 
         particleB.v[0] = -particleB.v[0]
 
-    if particleB.r[1]**2>100: 
+    if particleB.r[1]**2>100:             #dit is eigenlijk alleen nodig als er verticale beweging was
         particleB.v[1] = -particleB.v[1]
 
     return dot, counter_text
 
 # Create animation
-ani = FuncAnimation(fig, update, frames=range(300), init_func=init, blit=True, interval=20)
+ani = FuncAnimation(fig, update, frames=range(num_steps), init_func=init, blit=True, interval=20)
 
 # For Jupyter notebook:
 from IPython.display import HTML
@@ -1283,6 +1284,9 @@ Klaar? Bekijk de twee versies, kies de beste en doe een `Pull Request` naar `Mai
 ```
 
 ```python
-#Notities:
-#opdracht 17 komt totaal niet op een getal van pi uit.
+
+```
+
+```python
+
 ```
