@@ -48,7 +48,7 @@ Als model gaan we uit van een deel van het volume van een fietsband die onder ee
 ```
 
 ```{solution} ex-recap-1
-### Kijken of dit op mijn branche staat###
+We nemen aan dat het een ideaal gas is. PV = nRT. Omschrijven levert V = nRT/P. Hierbij is T 293.15 graden Kelvin. P is $10^{6}$ pascal. R is de gasconstante, wat gelijk is aan $8.31446261815324 \; \mathrm{J/K/mol}$.Hierdoor krijg je de totale volume. Dit moet gedeeld worden door de constante van Avogadro voor de volume per molecuul. De ribbe is gelijk aan de derdemachtswortel van het volume. Het resultaat is $1.5933703218\cdot10^{-9}$. Dit komt dus inderdaad overeen met de ribben van een kubus met $1.6\; \mathrm{nm}$.
 ```
 
 De simulatie die we gaan maken bevat maar twee dimensies. We kunnen het oppervlak per deeltje in deze simulatie daarom kiezen als het zojuist berekende $V_\text{molecuul}^{2/3}$.
@@ -68,7 +68,7 @@ Ook deze heb je hierna nodig.
 ```
 
 ```{solution} ex-recap-2
-### Kamertemperatuur is rond de 20 graden. Dit is $293.15$ graden kelvin. De constante van Boltzmann is $1.380649\cdot10^{-23}$.Er zijn 2 dimensies: f is dus 2. Rechts van de streep staat $\frac{2}{2}\cdot1.380649\cdot10^{-23}\cdot293.15 = 4.047372544\cdot10^{-21}$. Een luchtmolecuul heeft een massa van $28.97$ unit, wat omgezet kan worden tot $4.81058\cdot10^{-26}$ kilogram. De snelheid is dan $\sqrt{\frac{4.047372544}{0.5\cdot4.81058\cdot10^{-26}}}$. Dit komt uit op $410.2068117\mathrm{m/s}$, wat afgerond $4\cdot10^{2} \mathrm{m/s}$ is.  ###
+Kamertemperatuur is rond de 20 graden. Dit is $293.15$ graden kelvin. De constante van Boltzmann is $1.380649\cdot10^{-23}$.Er zijn 2 dimensies: f is dus 2. Rechts van de streep staat $\frac{2}{2}\cdot1.380649\cdot10^{-23}\cdot293.15 = 4.047372544\cdot10^{-21}$. Een luchtmolecuul heeft een massa van $28.97$ unit, wat omgezet kan worden tot $4.81058\cdot10^{-26}$ kilogram. De snelheid is dan $\sqrt{\frac{4.047372544}{0.5\cdot4.81058\cdot10^{-26}}}$. Dit komt uit op $410.2068117\mathrm{m/s}$, wat afgerond $4\cdot10^{2} \mathrm{m/s}$ is. 
 ```
 
 ```{exercise} Radius
@@ -77,22 +77,34 @@ In de python cell hieronder staan enkele waarden gegeven. Het aantal deeltjes $N
 ```
 
 ```{solution} ex-recap-3
-### HHE ###
-```
+Ik heb het gezien, ook al weet ik niet per se wat de vraag is
 
 ```{exercise} DT
 :label: ex-recap-4
-Bekijk de waarde van `DT`. Hoe zorgt deze waaarde ervoor dat het onwaarschijnlijk is dat een botsing gemist wordt? Zet in het groene commentaar bij elke constante in welk eenheid deze wordt weergegeven.
+Bekijk de waarde van `DT`. Hoe zorgt deze waarde ervoor dat het onwaarschijnlijk is dat een botsing gemist wordt? Zet in het groene commentaar bij elke constante in welk eenheid deze wordt weergegeven.
 ```
 
 Onze simulatie modelleert dus een klein systeem zonder rekening te houden met de kracht tussen de luchtmoleculen. Je zult zien dat we toch al behoorlijk wat van de processor vragen om deze berekeningen te doen. Om een meer realistische modelsimulatie te maken is daarom een serieuze uitdaging, die veel wiskunde en programmeerervaring vraagt. Op dit ogenblik wordt dit bijvoorbeeld gevraagd bij een van de eerste opdrachten van het vak 'Computational Physics' van de master Applied Physics. 
 
+```python
+#Excersize 1
+P = 10*10**5 #10 bar  
+R=8.31446261815324   #gasconstante
+T = 273.15 + 20 #20 graden celsius
+vgedeeldn = T*R/P      #De volume per mol
+N_A=6.022*10**23 #Getal van avogadro
+Vtot= vgedeeldn/N_A       #Volume per molecuul
+ribbe = Vtot**(1/3)
+print(ribbe)
+print('Dit lijkt op 1.6 nanometer')
+```
+
 ```python tags=["NB2_init"] editable=true slideshow={"slide_type": ""}
-BOX_SIZE_0 = 10                # Hoogte en lengte startvolume
-N = 40                         # Aantal deeltjes
-V_0 = 1                        # Startsnelheid van deeltjes
-RADIUS = 0.3                   # Straal van moleculen
-DT = 0.1 * RADIUS / V_0        # Tijdstap om geen botsing te missen
+BOX_SIZE_0 = 10                # Hoogte en lengte startvolume in nanometer
+N = 40                         # Aantal deeltjes in geen eenheid
+V_0 = 1                        # Startsnelheid van deeltjes in meter per seconde
+RADIUS = 0.3                   # Straal van moleculen in nanometer
+DT = 0.1 * RADIUS / V_0        # Tijdstap om geen botsing te missen in nanoseconde
 ```
 
 ### Particle class
@@ -183,8 +195,7 @@ Leg uit dat d.m.v. onderstaande code de deeltjes allemaal dezelfde snelheid hebb
 ```
 
 ```{solution} ex-recap-5
-Jouw antwoord hier...
-### YOUR CODE HERE ###
+Alle deeltjes hebben een andere vx, maar de vy van de deeltjes zijn afhankelijk gemaakt van de vx. Deze is ook zo gemaakt dat er volgens Pythagoras eenzelfde snelheid ontstaat, maar met andere snelheden in de waarden. Vervolgens wordt er via de positielijn door een uniforme verdeling bepaald in de doos.
 ```
 
 ```python tags=["NB2_init"] editable=true slideshow={"slide_type": ""}
@@ -209,8 +220,7 @@ Leg uit hoe er in onderstaande code wordt voorkomen dat de botsing tussen twee d
 ```
 
 ```{solution} ex-recap-6
-Jouw antwoord hier...
-### YOUR CODE HERE ###
+Er worden 2 for loops uitgevoerd: De eerste for loops check, of er een botsing is tussen 2 particles per particles en de tweede forloop reageert op een botsing tussen de twee.
 ```
 
 ```python editable=true slideshow={"slide_type": ""} tags=["NB2_init"]
@@ -315,14 +325,20 @@ Voeg aan de simulatie een regel toe die voor elke tijdstap bepaalt wat de totale
 
 particles = []
 energy_tot = []
+kinetische = 0
 create_particles(particles)
 for i in range(100):
     take_time_step(particles)
+    kinetische=0
+    for j in range(len(particles)):
+        kinetische = kinetische + particles[j].m * 0.5 * V_0**2
+    energy_tot = np.cumsum(energy_tot,kinetische)
     # voeg de som van de kinetische energie in deze stap toe aan energy_tot 
     ### YOUR CODE HERE ###
 
+
 # plot de figuur van de kinetische energie als functie van de tijd. 
-### YOUR CODE HERE ###
+plt.plot(particles,energy_tot)
 ```
 
 ```{exercise} 
