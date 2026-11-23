@@ -36,7 +36,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Beginwaarden
-dt = 0.25                  #s
+dt = 0.25                 #s
 t_e = 10                   #s
 N = int(t_e/dt)+1
 t = np.arange(0,t_e+dt,dt) #s
@@ -68,7 +68,9 @@ plt.plot(t,x_2,'b.', markersize=1, label='fietser 2')
 
 plt.show()
 
-
+print(np.max(x_1))
+print(np.max(x_2))
+print(np.max(t))
 ```
 
 Wat op zou kunnen vallen is dat de snelheid in een cel constant gehouden wordt ($x_i = v_i\cdot\Delta t$), terwijl de snelheid tijdens het tijdsinterval $\Delta t$ toeneemt. De oplossing is dus een benadering van de exacte oplossing, maar door deze methode (Euler explicit forward), moeten we wel voorzichtig zijn met de grootte van het tijdsinterval.
@@ -76,12 +78,17 @@ Wat op zou kunnen vallen is dat de snelheid in een cel constant gehouden wordt (
 ```{exercise}
 Maak het tijdsinterval $dt$ groter en vergelijk de afgelegde weg in de tien seconde. Wat gebeurt er met de afgelegde weg als we $dt$ groter maken? Is dat logisch vanuit gezien de natuurkunde? En gezien de methode van discretisatie? Leg uit.
 ```
+De afgelegde weg voor de versnellende fiets neemt af als de tijdsinterval groter wordt. Natuurkundig gezien in dit onlogisch omdat de eindtijd en versnelling nog steeds hetzelfde zijn.
+Volgens de methode van discretisatie is het logisch want de laatste tijd waarop de fiets versnelt wordt hoger.
 
 
 <!-- Jouw antwoord hier  -->
 
 ```python
-%reset -f  #clears memory as we don't need it further down 
+%reset -f 
+import numpy as np
+import matplotlib.pyplot as plt
+
 ```
 
 ## Naar een deeltjesmodel
@@ -97,7 +104,6 @@ Een *class* is een blauwdruk voor het creëren van objecten (zoals deeltjes, ato
 # Merk op dat de class zelf geen deeltje is! 
 # Een object dat tot een bepaalde class behoort, wordt een instant van die class genoemd. 
 # Je kunt meerdere instants van een class hebben.
-
 class ParticleClass:
     def __init__(self, m, v, r, R):
         self.m = m                         # massa van het deeltje
@@ -183,11 +189,14 @@ Voorspel en controleer vervolgens met onderstaande code.
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
-
+#De deeltjes hebben een y - coördinaat van 0 en x-coördinaten 0.0,1.0,2.0,3.0
 plt.figure()
 for particle in particle_array:
     plt.plot(particle.r[0],particle.r[1],'k.')
+plt.xlabel('x')
+plt.ylabel('y')
 plt.show()
+
 
 ```
 
@@ -230,6 +239,18 @@ En als je wilt gaan voor een uitdaging:
 
 ```python
 ### YOUR CODE HERE ###
+particle_array2 = []
+
+for start_x in range(11):
+    particle_array2.append(ParticleClass(m=1.0, v=[np.random.randint(-5,6), 0], r=[start_x, 0.0],R=1.0))
+plt.figure()
+for particle, particle_object2 in enumerate(particle_array):
+        particle_object2.update_position(1.0)
+for particle in particle_array2:   
+    plt.plot(particle.r[0],particle.r[1],'k.')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.show()
 ```
 
 Onze simulaties worden snel “zwaar”. Er moeten veel berekeningen gedaan worden en dat kost nu eenmaal tijd. Nu is het wel zo dat sommige berekeningen meer tijd kosten dan anderen. Om te kijken of een stukje code geoptimaliseerd kan worden, moeten we een timer maken. Dat kan met onderstaande code:
@@ -364,7 +385,7 @@ def update(frame):
     return dot,
 
 # Creeer de animatie
-ani = FuncAnimation(fig, update, frames=range(200), init_func=init, blit=True, interval=50)
+ani = FuncAnimation(fig, update, frames=range(600), init_func=init, blit=True, interval=16)
 
 # Omdat we werken met Jup. Notebooks (en niet een .py file)
 from IPython.display import HTML
@@ -403,7 +424,7 @@ def init():
     dot.set_data([], [])
     return dot,
 
-# Update function for each frame
+#Update function for each frame
 def update(frame):
     particle.update_position()
     dot.set_data([particle.r[0]], [particle.r[1]])
@@ -429,10 +450,14 @@ Controleer je eigen antwoord door de functie hierboven even te vervangen door de
 
 ```python tags=["NB1_doorlopendedoos"]
 # doorlopende doos
-def update(frame):
+def update_loopingbox(frame):
     particle.update_position()
     dot.set_data([particle.r[0]], [particle.r[1]])
 ### YOUR CODE HERE ###
+    if particle.r[0] > 10:
+        particle.r[0] =-10
+    if particle.r[0] < -10:
+        particle.r[0] = 10
     return dot,         
 ```
 
@@ -445,9 +470,14 @@ Test wederom je code door de vernieuwde functie hierboven te plakken.
 
 ```python tags=["NB1_hardewand"]
 # harde wanden
-def update(frame):
+def update_hardwall(frame):
     particle.update_position()
     dot.set_data([particle.r[0]], [particle.r[1]])
+    if np.abs(particle.r[0]) >= 10:
+        particle.v[0] = -particle.v[0]
+    if np.abs(particle.r[1]) >= 10:
+        particle.v[1] = -particle.v[1]
+    
 ### YOUR CODE HERE ###
     return dot,
 ```
@@ -463,8 +493,8 @@ Verander nu de code zodanig dat de beginsnelheid gegeven wordt door $\vec{v}=5\h
 dt = 0.1         # time step
 num_steps = 500  # number of time steps
 
-### YOUR CODE HERE ###
-
+particle = ParticleClass(m=1.0, v=[5.0, 3], r=[0.0, 0.0],R=1.0)
+#particle.v=[5,3]
 # Create the figure and axis
 fig, ax = plt.subplots()
 ax.set_xlim(-10, 10)
@@ -489,8 +519,8 @@ def update(frame):
     ### YOUR CODE HERE ###
     return dot,
 
-# Create animation
-ani = FuncAnimation(fig, update, frames=range(200), init_func=init, blit=True, interval=50)
+# Create animation, aangepast om fucntie van exercise 8 te gebruiken
+ani = FuncAnimation(fig, update_hardwall, frames=range(600), init_func=init, blit=True, interval=16)
 
 # For Jupyter notebook:
 from IPython.display import HTML
@@ -531,10 +561,28 @@ class ParticleClass:
 
 # Simulation parameters
 dt = 0.1         # time step
-num_steps = 500  # number of time steps
-particle = ParticleClass(m=1.0, v=[5.0, 0], r=[0.0, 0.0],R=1.0)  
+num_steps = 500
+a_y = -9.81
+a_x = 0# number of time steps
+#new class
+class ParticleClass:
+    def __init__(self, m, v, r, R):
+        self.m = m                         # mass of the particle
+        self.v = np.array(v, dtype=float)  # velocity vector
+        self.r = np.array(r, dtype=float)  # position vector
+        self.R = R                         # radius of the particle
+
+    def update_position(self):
+        self.r += self.v * dt
+    
+    def update_velocity_x(self,a_x):
+        self.v[0] += a_x*dt
+    def update_velocity_y(self, a_y):
+        self.v[1] += a_y*dt
+particle = ParticleClass(m=1.0, v=[5.0, 0], r=[0.0, 0.0],R=1.0) 
 ### YOUR CODE HERE ###
 # Create the figure and axis
+
 fig, ax = plt.subplots()
 ax.set_xlim(-10, 10)
 ax.set_ylim(-10, 10)
@@ -543,6 +591,15 @@ ax.set_title("Particle Animation")
 ax.set_xlabel("x")
 ax.set_ylabel("y")
 
+def update_hardwall2(frame):
+    particle.update_position()
+    particle.update_velocity_y(a_y)
+    dot.set_data([particle.r[0]], [particle.r[1]])
+    if particle.r[0] >= 10 or particle.r[0] <=-10:
+        particle.v[0] = -particle.v[0]
+    if particle.r[1] >= 10 or particle.r[1] <=-10:
+        particle.v[1] = -particle.v[1]
+        
 # Create the particle as a red dot
 dot, = ax.plot([], [], 'ro', markersize=10);
 
@@ -561,7 +618,7 @@ def update(frame):
     return dot,
 
 # Create animation
-ani = FuncAnimation(fig, update, frames=range(200), init_func=init, blit=True, interval=50)
+ani = FuncAnimation(fig, update_hardwall2, frames=range(200), init_func=init, blit=False, interval=50)
 
 # For Jupyter notebook:
 from IPython.display import HTML

@@ -3,6 +3,7 @@
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.constants import Boltzmann
 ```
 
 ```{warning}
@@ -68,7 +69,22 @@ Ook deze heb je hierna nodig.
 ```
 
 ```{solution} ex-recap-2
-### YOUR CODE HERE ###
+Formule omschrijven geeft:
+$$
+    v = \sqrt{\frac{fk_BT}{m}}
+$$
+
+Invullen
+
+$$
+m = 4.81\cdot10^{-26}kg , T = 273.15+20 = 293.15K, f=2, k_B = 1.38\cdot10^{-23} J T^{-1}
+$$
+
+Geeft:
+
+$$
+    v = \sqrt{\frac{2\cdot 1.38 \cdot10^{-23} \cdot 293.15 }{4.81\cdot10^{-26}}} \approx 410.14 ms^{-1}
+$$
 ```
 
 ```{exercise} Radius
@@ -88,11 +104,11 @@ Bekijk de waarde van `DT`. Hoe zorgt deze waaarde ervoor dat het onwaarschijnlij
 Onze simulatie modelleert dus een klein systeem zonder rekening te houden met de kracht tussen de luchtmoleculen. Je zult zien dat we toch al behoorlijk wat van de processor vragen om deze berekeningen te doen. Om een meer realistische modelsimulatie te maken is daarom een serieuze uitdaging, die veel wiskunde en programmeerervaring vraagt. Op dit ogenblik wordt dit bijvoorbeeld gevraagd bij een van de eerste opdrachten van het vak 'Computational Physics' van de master Applied Physics. 
 
 ```python tags=["NB2_init"] editable=true slideshow={"slide_type": ""}
-BOX_SIZE_0 = 10                # Hoogte en lengte startvolume
-N = 40                         # Aantal deeltjes
-V_0 = 1                        # Startsnelheid van deeltjes
-RADIUS = 0.3                   # Straal van moleculen
-DT = 0.1 * RADIUS / V_0        # Tijdstap om geen botsing te missen
+BOX_SIZE_0 = 10                # Hoogte en lengte startvolume (meter)
+N = 40                         # Aantal deeltjes 
+V_0 = 1                        # Startsnelheid van deeltjes (meter per seconde)
+RADIUS = 0.3                   # Straal van moleculen (nanometer)
+DT = 0.1 * RADIUS / V_0        # Tijdstap om geen botsing te missen (10 nanoseconden)
 ```
 
 ### Particle class
@@ -184,7 +200,23 @@ Leg uit dat d.m.v. onderstaande code de deeltjes allemaal dezelfde snelheid hebb
 
 ```{solution} ex-recap-5
 Jouw antwoord hier...
-### YOUR CODE HERE ###
+Er geldt  voor v_tot^2 = vx^2+vy^2
+vx kan ook worden bepaald als np.random.uniform(-1,1)* V_0
+$$
+    vx = c*V_0,  en -1 \leq c \leq 1
+$$
+dan geldt met d tussen -1 of 1
+
+vy =  v_0 * d * sqrt(1-c^2)
+
+
+dus v_tot^2 = v_0^2 *c^2 + d^2(1-c^2) *v_0^2
+
+= v_0^2
+
+dus de snelheid is voor alle deeltjes hetzelfde
+
+Voor de positie wordt met een uniforme distrobutie een positie in de doos gepakt met de np.random.uniform functie
 ```
 
 ```python tags=["NB2_init"] editable=true slideshow={"slide_type": ""}
@@ -318,6 +350,7 @@ energy_tot = []
 create_particles(particles)
 for i in range(100):
     take_time_step(particles)
+    energy_tot[i] = kin_energy(self.v)
     # voeg de som van de kinetische energie in deze stap toe aan energy_tot 
     ### YOUR CODE HERE ###
 
